@@ -41,17 +41,14 @@ def flooding(message, sender, topology_file=topology_file, names_file=names_file
 	"""
 	start_time = time.time()
 	info = eval(message)
-	if(last_id==info["ID"]):
-		return None
-	else:
-		last_start_node = info["Nodo fuente"]
-		last_end_node = info["Nodo destino"]
-		last_message = info["Mensaje"]
-		info["Saltos"] = info["Saltos"] + 1
-		nodes = get_neighbors(topology_file, names_file, sender)
-		info["Listado de nodos"] = nodes
-		info["Distancia"] = info["Distancia"] - start_time + time.time()
-		return (nodes, json.dumps(info))
+	last_start_node = info["Nodo fuente"]
+	last_end_node = info["Nodo destino"]
+	last_message = info["Mensaje"]
+	info["Saltos"] = info["Saltos"] + 1
+	nodes = get_neighbors(topology_file, names_file, sender)
+	info["Listado de nodos"] = nodes
+	info["Distancia"] = info["Distancia"] - start_time + time.time()
+	return (nodes, json.dumps(info))
 
 #print(flooding('{"Nodo fuente":"yeet@alumchat.xyz", "Nodo destino":"swag@alumchat.xyz","Saltos":0, "Distancia": 0, "Listado de nodos":[], "Mensaje": "Hola mundo", "ID": 0}','yeet@alumchat.xyz'))
 
