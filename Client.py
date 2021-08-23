@@ -30,6 +30,8 @@ from argparse import ArgumentParser
 
         type_: routing type
 
+        listening: boolean type, asking if the user is just listening or sending message
+
     Methods:
         Start: This method is helpful to delete the user
 
@@ -46,10 +48,10 @@ class Client(slixmpp.ClientXMPP):
         self.msg = message
         self.type_ = type_
         self.jid_ = jid
-        self.lastid = []
+        self.lastid = []   #Memory of all messages sent by the client
 
 
-        #Handle events
+        #Handle events, register added in case user does noe exist
         self.add_event_handler("session_start", self.start)
         self.add_event_handler("message", self.message)
         self.add_event_handler("register", self.register)
@@ -61,7 +63,7 @@ class Client(slixmpp.ClientXMPP):
 
 
         if(not self.listening and self.type_=="flooding"):
-            #Send message of type chat
+            #Giving the right format to the message
             info = {}
             info["Nodo fuente"] = self.jid_
             info["Nodo destino"] = self.recipient
@@ -72,6 +74,7 @@ class Client(slixmpp.ClientXMPP):
             info["ID"] = str(uuid.uuid4())
             self.lastid.append(info["ID"])
 
+            #Getting the flooding message and the receivers by flooding
             receivers, message = flooding(json.dumps(info), self.jid_)
 
             for receiver in receivers:
@@ -112,14 +115,20 @@ class Client(slixmpp.ClientXMPP):
 
                 info = eval(str(body))
 
+                #Do only if the message has not been sent 
                 if(info["ID"] not in self.lastid):
                     self.lastid.append(info["ID"])
 
                     print('\n\n\t',recipient,":", info["Mensaje"],'\n\tSaltos:', info["Saltos"],'\n\tDistancia:', info["Distancia"],'\n\n')
 
-                    #Send messages
+                    
+                    #Getting the flooding message and the receivers by flooding
                     receivers, message = flooding(str(body), self.jid_)
+
+                    #Send messages
                     for receiver in receivers:
+
+                        #Do only to the nodes that did not sent the message
                         if(receiver!=recipient):
                             print("Message sent to :",receiver)
                             self.send_message(mto=receiver,
