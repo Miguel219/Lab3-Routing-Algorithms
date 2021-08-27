@@ -1,0 +1,4 @@
+DEBUG = False
+SLEEP = 3
+ECO_TIMER = 10
+TABLE_TIMER = 10
