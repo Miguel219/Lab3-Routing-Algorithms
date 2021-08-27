@@ -4,7 +4,7 @@ import slixmpp
 import json
 import logging
 from getpass import getpass
-from aioconsole import ainput, aprint
+from aioconsole import ainput, aprint 
 import time
 from utils import *
 
@@ -59,6 +59,7 @@ class lsrUser(slixmpp.ClientXMPP):
         self.network.append(self.LSP) 
 
         #Continusly send the LSP through the network
+
         self.loop.create_task(self.send_LSP())
 
         await sleep(2)
@@ -73,13 +74,13 @@ class lsrUser(slixmpp.ClientXMPP):
         await sleep(20)
         print("Network converged, sending message")
 
-        self.send_chat_message(self.boundjid.bare,send,message=message)
+        self.send_chat_message(self.boundjid.bare,send,steps=1,visited_nodes=[self.boundjid.bare],message=message)
         
         print("press enter to exit")
         exit = await ainput()
         self.disconnect()
 
-    #Function used to get the JID of all the nodes neighbours from the files topo and names
+     #Function used to get the JID of all the nodes neighbours from the files topo and names
     def neighbours_JID(self):
         for id in self.neighbours_IDS:
             neighbour_JID = get_JID(self.names_file, id)
@@ -110,11 +111,11 @@ class lsrUser(slixmpp.ClientXMPP):
         elif body['type'] == message_type:
             if body['to'] != self.boundjid.bare:
                 print('Got a message that is not for me, sending it ')
-                path = self.calculate_path(self.boundjid.bare, body['to'])
                 self.send_chat_message(source = body['from'],to = body['to'], steps=body['steps'] +1, distance=body['distance'],visited_nodes= body['visited_nodes'].append(self.boundjid.bare),message=body['mesage'])
             elif body['to'] == self.boundjid.bare:
                 print('Got a message!')
                 print(body['from'], " : ", body['mesage'])
+                print(body)
 
         
     async def send_hello_msg(self,to, steps = 1):
@@ -160,8 +161,9 @@ class lsrUser(slixmpp.ClientXMPP):
             'visited_nodes':visited_nodes, 
             'mesage':message
         }
-        to_send = object_to_json(body)
         path = self.calculate_path(self.boundjid.bare, to)
+        body['distance'] += self.LSP['neighbours'][path[1]['from']]
+        to_send = object_to_json(body)
         self.send_message(mto=path[1]['from'],mbody = to_send,mtype='chat')
 
     #Function used to send proces an incoming LSP, it checks if its sequence is greater than the known one and if it is it stores it
