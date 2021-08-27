@@ -115,16 +115,20 @@ Ingresa el número de la opción que deseas realizar:
     def message(self, msg):
         if msg['type'] == 'chat':
             message = json.loads(msg['body'])
-            if message["recipientNode"] == self.nickName:        
+            if message["recipientNode"] == self.jid:        
                 print("----------------Notificación----------------------")
                 print(json.dumps(message, indent=4, sort_keys=True))
                 print("--------------------------------------------------")
             else:
                 message["jumps"] = message["jumps"] + 1
-                message["nodesList"].append(self.nickName)
-                self.send_message(mto=get_JID(names_file=self.names_file, ID=self.table[message["recipientNode"]]['neighbour']),
-                            mbody=json.dumps(message),
-                            mtype='chat')
+                message["nodesList"].append(self.jid)
+                self.send_message(
+                        mto=get_JID(
+                            names_file=self.names_file, 
+                            ID=self.table[get_ID(names_file=self.names_file, JID=message["recipientNode"])]['neighbour']
+                            ),
+                        mbody=json.dumps(message),
+                        mtype='chat')
         
         elif msg['type'] == 'normal':
             message = json.loads(msg['body'])
@@ -177,11 +181,11 @@ Ingresa el número de la opción que deseas realizar:
             recipientNode = get_ID(names_file=self.names_file, JID=contact)
             if(recipientNode in self.table.columns and self.table[recipientNode]['neighbour'] is not np.nan and self.table[recipientNode]['distance'] is not np.inf):
                 msg = {}
-                msg["senderNode"] = self.nickName
-                msg["recipientNode"] = recipientNode
+                msg["senderNode"] = self.jid
+                msg["recipientNode"] = contact
                 msg["jumps"] = 1
                 msg["distance"] = self.table[recipientNode]['distance']
-                msg["nodesList"] = [self.nickName]
+                msg["nodesList"] = [self.jid]
                 msg["message"] = message
                 self.send_message(mto=get_JID(names_file=self.names_file, ID=self.table[recipientNode]['neighbour']),
                                 mbody=json.dumps(msg),
