@@ -31,6 +31,7 @@ class lsrUser(slixmpp.ClientXMPP):
         
         self.topo_file = topo_file
         self.names_file = names_file
+        #This array will contain all the LSPs of the nodes 
         self.network = []
         self.echo_sent = None
         self.LSP = {
@@ -49,6 +50,7 @@ class lsrUser(slixmpp.ClientXMPP):
         await self.get_roster()
         print("When you are ready press enter")
         start = await ainput()
+        #Sending the hello and echo messages to all the neighbours nodes 
         for neighbour in self.neighbours:
             await self.send_hello_msg(neighbour)
         for neighbour in self.neighbours:
@@ -56,7 +58,7 @@ class lsrUser(slixmpp.ClientXMPP):
 
         self.network.append(self.LSP) 
 
-
+        #Continusly send the LSP through the network
         self.loop.create_task(self.send_LSP())
 
         await sleep(2)
@@ -66,6 +68,7 @@ class lsrUser(slixmpp.ClientXMPP):
         if send != None:
             message = await ainput('Message: ')
 
+        #Waiting some time so that the network converges
         print("Waiting for network to converge")
         await sleep(20)
         print("Network converged, sending message")
@@ -76,20 +79,24 @@ class lsrUser(slixmpp.ClientXMPP):
         exit = await ainput()
         self.disconnect()
 
+    #Function used to get the JID of all the nodes neighbours from the files topo and names
     def neighbours_JID(self):
         for id in self.neighbours_IDS:
             neighbour_JID = get_JID(self.names_file, id)
             self.neighbours.append(neighbour_JID)
 
+    #Function called eveery time a message is received
     async def message(self, msg):
         body = json_to_object(msg['body'])
         if body['type'] == hello:
             print("Hello from: ", msg['from'])
 
+        #If an echo type message is received send an echo response to the sender
         elif body['type'] == echo_send:
             print("Echoing back to: ", msg['from'])
             await self.send_echo_message(body['from'],echo_response)
 
+        #If an echo response message is received calculate the time between nodes
         elif body['type'] == echo_response:
             distance = time.time()-self.echo_sent
             print("Distance to ", msg['from'], ' is ', distance)
@@ -98,6 +105,8 @@ class lsrUser(slixmpp.ClientXMPP):
         elif body['type'] == lsp:
             new = await self.update_network(body)
             await self.flood_LSP(body, new)
+
+        #If we receive a message check if it is ment for us if it is print the content else send it through the network
         elif body['type'] == message_type:
             if body['to'] != self.boundjid.bare:
                 print('Got a message that is not for me, sending it ')
@@ -155,7 +164,10 @@ class lsrUser(slixmpp.ClientXMPP):
         path = self.calculate_path(self.boundjid.bare, to)
         self.send_message(mto=path[1]['from'],mbody = to_send,mtype='chat')
 
-
+    #Function used to send proces an incoming LSP, it checks if its sequence is greater than the known one and if it is it stores it
+    #Params:
+    #lsp: The received lsp 
+    #Returns: 1 if the lsp is new None if the lsp is already known
     async def update_network(self, lsp):
         for i in range(0,len(self.network)):
             node = self.network[i]
@@ -169,6 +181,11 @@ class lsrUser(slixmpp.ClientXMPP):
         self.network.append(lsp)
         return 1
     
+    #Function used to calculate the shortest path from a to b
+    #Params:
+    #Source: source node JID
+    #Dest: recipient node JID
+    #Returns: a list with the LSPs of the nodes of the path
     def calculate_path(self, source, dest):
         distance = 0
         visited = []
@@ -195,6 +212,10 @@ class lsrUser(slixmpp.ClientXMPP):
             distance += min_distance
         return visited
 
+    #Function used to find a LSP from a node JID
+    #Params:
+    #id: wanted node JID
+    #retrun: the LSP if it is on the network Fals if it int
     def find_node_in_network(self, id):
         for i in range(len(self.network)):
             node = self.network[i]
@@ -202,6 +223,10 @@ class lsrUser(slixmpp.ClientXMPP):
                 return node
         return False
 
+    #Function used to flood an LSP to the network
+    #Params:
+    #lsp: the lsp to send
+    #new: 1 if the lsp is new None if the lsp should not be flooded
     async def flood_LSP(self, lsp, new):
         for neighbour in self.neighbours:
             if new and neighbour != lsp['from']:
