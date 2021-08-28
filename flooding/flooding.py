@@ -46,7 +46,7 @@ def flooding(message, sender, topology_file=topology_file, names_file=names_file
 	last_message = info["Mensaje"]
 	info["Saltos"] = info["Saltos"] + 1
 	nodes = get_neighbors(topology_file, names_file, sender)
-	info["Listado de nodos"] = nodes
+	info["Listado de nodos"] = [info["Listado de nodos"], nodes]
 	info["Distancia"] = info["Distancia"] - start_time + time.time()
 	return (nodes, json.dumps(info))
 
