@@ -30,4 +30,4 @@ To run the link state rounting client move to the LSR directory and run:
 ```
     python lsr.py 
 ```
-The program will ask for your alumchat credentials and other needed data 
+The program will ask for your alumchat credentials and other needed data like the paths for the topo file and the names file
