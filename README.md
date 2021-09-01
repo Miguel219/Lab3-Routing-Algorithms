@@ -28,6 +28,6 @@ If you want to listen, and just listen:
 
 To run the link state rounting client move to the LSR directory and run:
 ```
-    python client.py 
+    python lsr.py 
 ```
 The program will ask for your alumchat credentials and other needed data 
