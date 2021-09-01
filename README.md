@@ -1,5 +1,15 @@
 # Lab3-Routing-Algorithms
 
+## Installation
+
+To install the required libraries you can run the following comands:
+```
+    pip install slixmpp
+    pip install aioconsole
+    pip install pandas
+    pip install numpy
+```
+
 ## For Flooding
 
 If you want to write a message you must run it like this:
@@ -13,3 +23,11 @@ If you want to listen, and just listen:
 ```
   python main.py -j <JID> -p <Password> -r "flooding" -t true
 ```
+
+## For LSR
+
+To run the link state rounting client move to the LSR directory and run:
+```
+    python client.py 
+```
+The program will ask for your alumchat credentials and other needed data 
