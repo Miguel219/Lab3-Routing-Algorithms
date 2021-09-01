@@ -11,4 +11,4 @@ If you want to write other message, kill the script and run it again
   
 If you want to listen, and just listen:
   
-python main.py -j "saul_a@alumchat.xyz" -p "01234" -r "flooding" -t true
+  python main.py -j <JID> -p <Password> -r "flooding" -t true
