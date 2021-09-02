@@ -34,7 +34,7 @@ The program will ask for your alumchat credentials and other needed data like th
 
 
 ## For DVR
-First you have to replace "topo-demo.txt" and "names-demo.txt" files in main directory.
+First you have to replace "topo-demo.txt" and "names-demo.txt" files in main directory.<br>
 To run the distance vector rounting client move to the dvr directory and run:
 ```
     python main.py 
