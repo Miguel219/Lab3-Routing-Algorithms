@@ -1,1 +1,1 @@
-{"type":"names", "config":{'A': 'saul_a@alumchat.xyz', 'B': 'saul_b@alumchat.xyz', 'C': 'saul_c@alumchat.xyz', 'D': 'saul_d@alumchat.xyz', 'E': 'saul_e@alumchat.xyz', 'F': 'saul_f@alumchat.xyz', 'G': 'saul_g@alumchat.xyz'} }
+{"type":"names", "config":{'A': 'cas18161@alumchat.xyz', 'B': 'saul_b@alumchat.xyz', 'C': 'saul_c@alumchat.xyz', 'D': 'saul_d@alumchat.xyz', 'E': 'saul_e@alumchat.xyz', 'F': 'saul_f@alumchat.xyz', 'G': 'saul_g@alumchat.xyz'} }

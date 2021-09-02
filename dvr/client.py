@@ -49,10 +49,10 @@ class Client(slixmpp.ClientXMPP):
         self.send_presence(pstatus=self.status)
         await self.get_roster()
         
-        self.topo_file = str(await ainput("Ingresa el nombre del archivo de la topología de la red: "))
-        self.names_file = str(await ainput("Ingresa el nombre del archivo de la asignación de ID con nodo: "))
-        # self.topo_file = 'dvr/topo-demo.txt'
-        # self.names_file = 'dvr/names-demo.txt'
+        # self.topo_file = str(await ainput("Ingresa el nombre del archivo de la topología de la red: "))
+        # self.names_file = str(await ainput("Ingresa el nombre del archivo de la asignación de ID con nodo: "))
+        self.topo_file = '../topo-demo.txt'
+        self.names_file = '../names-demo.txt'
         
         self.nickName = get_ID(names_file=self.names_file, JID=self.jid)
         self.neighbors = get_neighbors(topology_file=self.topo_file, ID=self.nickName)

@@ -1,1 +1,0 @@
-{"type":"names", "config":{'A': 'miguelcas_a@alumchat.xyz', 'B': 'miguelcas_b@alumchat.xyz', 'C': 'miguelcas_c@alumchat.xyz', 'D': 'miguelcas_d@alumchat.xyz', 'E': 'miguelcas_e@alumchat.xyz', 'F': 'miguelcas_f@alumchat.xyz', 'G': 'miguelcas_g@alumchat.xyz'} }
